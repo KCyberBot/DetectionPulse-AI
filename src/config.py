@@ -31,6 +31,8 @@ class Config:
 
     AI_TOKEN = os.getenv("AI_TOKEN")
 
+    GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
+
     # Database
     DATABASE_PATH = (
         "database/detectionpulse.db"

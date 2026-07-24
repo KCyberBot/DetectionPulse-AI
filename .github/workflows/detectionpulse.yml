@@ -4,6 +4,7 @@
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           AI_TOKEN: ${{ secrets.AI_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
 
         run: |
 
