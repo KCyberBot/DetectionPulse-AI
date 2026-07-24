@@ -1,47 +1,53 @@
-import sqlite3
-from pathlib import Path
-
-from src.config import Config
+import json
+import os
 
 
 class Database:
 
-
     def __init__(self):
 
-        Path("database").mkdir(
+        self.path = "database/state.json"
+
+        os.makedirs(
+            "database",
             exist_ok=True
         )
 
-        self.conn = sqlite3.connect(
-            Config.DATABASE_PATH
-        )
+        if not os.path.exists(self.path):
 
-        self.create_tables()
+            with open(
+                self.path,
+                "w",
+                encoding="utf-8"
+            ) as f:
 
-
-
-    def create_tables(self):
-
-        cursor = self.conn.cursor()
+                json.dump({}, f, indent=4)
 
 
-        cursor.execute("""
-        CREATE TABLE IF NOT EXISTS rules
-        (
-            rule_id TEXT PRIMARY KEY,
-            title TEXT,
-            severity TEXT,
-            environment TEXT,
-            fingerprint TEXT,
-            url TEXT,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-        """)
+    def load(self):
+
+        with open(
+            self.path,
+            "r",
+            encoding="utf-8"
+        ) as f:
+
+            return json.load(f)
 
 
-        self.conn.commit()
+    def save(self, data):
 
+        with open(
+            self.path,
+            "w",
+            encoding="utf-8"
+        ) as f:
+
+            json.dump(
+                data,
+                f,
+                indent=4
+            )
 
 
     def check_rule(
@@ -50,39 +56,17 @@ class Database:
         fingerprint
     ):
 
-        cursor = self.conn.cursor()
+        data = self.load()
 
-
-        cursor.execute(
-            """
-            SELECT fingerprint
-            FROM rules
-            WHERE rule_id=?
-            """,
-            (rule_id,)
-        )
-
-
-        result = cursor.fetchone()
-
-
-        if result is None:
+        if rule_id not in data:
 
             return "NEW"
 
-
-
-        old_fingerprint = result[0]
-
-
-        if old_fingerprint != fingerprint:
+        if data[rule_id]["fingerprint"] != fingerprint:
 
             return "UPDATED"
 
-
-
         return "UNCHANGED"
-
 
 
     def save_rule(
@@ -95,32 +79,20 @@ class Database:
         url
     ):
 
+        data = self.load()
 
-        cursor = self.conn.cursor()
+        data[rule_id] = {
 
+            "title": title,
 
-        cursor.execute(
-            """
-            INSERT OR REPLACE INTO rules
-            (
-                rule_id,
-                title,
-                severity,
-                environment,
-                fingerprint,
-                url
-            )
-            VALUES (?,?,?,?,?,?)
-            """,
-            (
-                rule_id,
-                title,
-                severity,
-                environment,
-                fingerprint,
-                url
-            )
-        )
+            "severity": severity,
 
+            "environment": environment,
 
-        self.conn.commit()
+            "fingerprint": fingerprint,
+
+            "url": url
+
+        }
+
+        self.save(data)

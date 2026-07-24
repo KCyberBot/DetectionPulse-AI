@@ -1,0 +1,9 @@
+{
+    "815cd91b-7dbc-4247-841a-d7dd1392b0a8": {
+        "title": "Sysmon Configuration Error",
+        "severity": "high",
+        "environment": "\ud83e\ude9f Windows",
+        "fingerprint": "36167279378dfaf98aba4383430265a10dbba770f38cf17a5442b7d68fe9d916",
+        "url": "https://github.com/SigmaHQ/sigma/blob/master/rules/windows/sysmon/sysmon_config_modification_error.yml"
+    }
+}

@@ -34,9 +34,7 @@ class Config:
     GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 
     # Database
-    DATABASE_PATH = (
-        "database/detectionpulse.db"
-    )
+    STATE_FILE = "database/state.json"
 
     # Filters
     ENABLE_CLOUD_RULES = False
